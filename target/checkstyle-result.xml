@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="8.29">
-<file name="C:\projects\job4j_grabber\src\main\java\Test.java">
+<file name="C:\projects\job4j_grabber\src\main\java\TestFail.java">
 </file>
-<file name="C:\projects\job4j_grabber\src\test\java\TestTest.java">
+<file name="C:\projects\job4j_grabber\src\test\java\TestFailTest.java">
 </file>
 </checkstyle>
