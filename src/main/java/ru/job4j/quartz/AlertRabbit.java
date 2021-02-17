@@ -5,8 +5,6 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.InputStream;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.Date;
 
@@ -14,12 +12,12 @@ import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 
-public class AlertRabbitCon {
+public class AlertRabbit {
 
     public static void main(String[] args) {
         Properties config = new Properties();
         Connection cn;
-        try (InputStream in = AlertRabbitCon.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
             config.load(in);
             Class.forName(config.getProperty("driver-class-name"));
             cn = DriverManager.getConnection(
@@ -39,7 +37,7 @@ public class AlertRabbitCon {
                     .usingJobData(data)
                     .build();
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(5)
+                    .withIntervalInSeconds(Integer.parseInt(config.getProperty("rabbit.interval")))
                     .repeatForever();
             Trigger trigger = newTrigger()
                     .startNow()
