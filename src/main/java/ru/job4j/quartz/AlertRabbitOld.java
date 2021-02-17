@@ -10,10 +10,10 @@ import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 
-public class AlertRabbit {
+public class AlertRabbitOld {
     public static void main(String[] args) {
         Properties config = new Properties();
-        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+        try (InputStream in = AlertRabbitOld.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
             config.load(in);
         }  catch (Exception e) {
             throw new IllegalStateException(e);
