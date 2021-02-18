@@ -16,19 +16,17 @@ public class AlertRabbit {
 
     public static void main(String[] args) {
         Properties config = new Properties();
-        Connection cn;
         try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
             config.load(in);
-            Class.forName(config.getProperty("driver-class-name"));
-            cn = DriverManager.getConnection(
-                    config.getProperty("url"),
-                    config.getProperty("username"),
-                    config.getProperty("password")
-            );
         }  catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        try {
+        try (Connection cn = DriverManager.getConnection(
+                config.getProperty("url"),
+                config.getProperty("username"),
+                config.getProperty("password"))) {
+            Class.forName(config.getProperty("driver-class-name"));
+
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
             JobDataMap data = new JobDataMap();
@@ -37,7 +35,7 @@ public class AlertRabbit {
                     .usingJobData(data)
                     .build();
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(Integer.parseInt(config.getProperty("rabbit.interval")))
+                    .withIntervalInSeconds(5)
                     .repeatForever();
             Trigger trigger = newTrigger()
                     .startNow()
