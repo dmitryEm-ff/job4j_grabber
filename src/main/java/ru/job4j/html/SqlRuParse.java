@@ -5,12 +5,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SqlRuParse {
+
     public static void main(String[] args) throws Exception {
         Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
         Elements row = doc.select(".postslisttopic");
@@ -23,21 +25,37 @@ public class SqlRuParse {
             System.out.println(date.text() + System.lineSeparator());
         }
     }
-    public static LocalDateTime dateConverter(Element element) throws ParseException {
-//        String stringDate = element.text();
-//        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd MMM yy, HH:mm",
-//                new Locale("ru", "RU"));
-//        LocalDate date = LocalDate.parse(stringDate, dateFormat);
-//        System.out.println(date);
-        String[] strings = element.text().split(", ");
-        if (strings[0].contains("сегодня")) {
-            return LocalDateTime.of(LocalDate.now(), LocalTime.parse(strings[1]));
-        } else if (strings[0].contains("вчера")) {
-            return LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.parse(strings[1]));
-        } else {
-            return null;
-        }
 
+    public static LocalDateTime dateConverter(Element element) {
+        String[] strings = element.text().split(", ");
+        LocalTime timeForJoin = LocalTime.parse(strings[1]);
+        Map<String, Integer> months = new HashMap<>() {{
+            put("янв", 1);
+            put("фев", 2);
+            put("мар", 3);
+            put("апр", 4);
+            put("май", 5);
+            put("июн", 6);
+            put("июл", 7);
+            put("авг", 8);
+            put("сен", 9);
+            put("окт", 10);
+            put("ноя", 11);
+            put("дек", 12);
+        }};
+        if (strings[0].contains("сегодня")) {
+            return LocalDateTime.of(LocalDate.now(), timeForJoin);
+        } else if (strings[0].contains("вчера")) {
+            return LocalDateTime.of(LocalDate.now().minusDays(1), timeForJoin);
+        } else {
+            String[] dateSplit = strings[0].split(" ");
+            LocalDate dateForJoin = LocalDate.of(
+                    Integer.parseInt(dateSplit[2]),
+                    months.get(dateSplit[1]),
+                    Integer.parseInt(dateSplit[0])
+            );
+            return LocalDateTime.of(dateForJoin, timeForJoin);
+        }
     }
 }
 
