@@ -1,17 +1,17 @@
 package ru.job4j.html;
 
 public class Post {
-    private String name;
+    private String title;
     private String url;
     private String date;
     private String text;
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getUrl() {
