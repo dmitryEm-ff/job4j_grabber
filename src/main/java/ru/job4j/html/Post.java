@@ -4,6 +4,7 @@ public class Post {
     private String name;
     private String url;
     private String date;
+    private String text;
 
     public String getName() {
         return name;
@@ -27,5 +28,13 @@ public class Post {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }
