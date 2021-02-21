@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,14 +24,14 @@ public class SqlRuParse {
                 System.out.println(href.attr("href"));
                 System.out.println(href.text());
                 Element date = td.parent().child(5);
-                System.out.println(dateConverter(date));
+                System.out.println(dateConverter(date.text()));
                 System.out.println(date.text() + System.lineSeparator());
             }
         }
     }
 
-    public static String dateConverter(Element element) {
-        String[] strings = element.text().split(", ");
+    public static String dateConverter(String date) {
+        String[] strings = date.split(", ");
         LocalTime timeForJoin = LocalTime.parse(strings[1]);
         Map<String, Integer> months = new HashMap<>() {{
             put("янв", 1);
@@ -62,10 +63,22 @@ public class SqlRuParse {
         }
     }
 
-    public static Post parseToPost() {
-
-        return null;
+    public static Post parseToPost(String url) throws IOException {
+        Document document = Jsoup.connect(url).get();
+        Elements msgBody = document.select(".msgBody");
+        String textElement = msgBody.get(1).text();
+        Elements msgFooter = document.select(".msgFooter");
+        String dateElement =  msgFooter.get(0).ownText().substring(0, 16);
+        return new Post(textElement, dateConverter(dateElement));
     }
+
+//    public static Post parseToPost(Element element) throws IOException {
+//        Document document = Jsoup.connect(element.attr("href")).get();
+//        Element elementInPost = document.getElementsByClass("msgTable").get(0);
+//        String text = elementInPost.child(1).getElementsByClass("msgBody").text();
+//        System.out.println(text);
+//        return null;
+//    }
 }
 //        Elements elements = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
 //        for (Element e : elements) {
