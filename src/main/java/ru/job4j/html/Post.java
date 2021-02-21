@@ -1,14 +1,12 @@
 package ru.job4j.html;
 
 public class Post {
-    private String date;
+
     private String text;
+    private String date;
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
+    public Post(String text, String date) {
+        this.text = text;
         this.date = date;
     }
 
@@ -16,7 +14,7 @@ public class Post {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public String getDate() {
+        return date;
     }
 }
