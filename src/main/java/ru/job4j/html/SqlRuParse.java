@@ -71,15 +71,8 @@ public class SqlRuParse {
         String dateElement =  msgFooter.get(0).ownText().substring(0, 16);
         return new Post(textElement, dateConverter(dateElement));
     }
-
-//    public static Post parseToPost(Element element) throws IOException {
-//        Document document = Jsoup.connect(element.attr("href")).get();
-//        Element elementInPost = document.getElementsByClass("msgTable").get(0);
-//        String text = elementInPost.child(1).getElementsByClass("msgBody").text();
-//        System.out.println(text);
-//        return null;
-//    }
 }
+
 //        Elements elements = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
 //        for (Element e : elements) {
 //            System.out.println(e.child(5).text());
