@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SqlRuParse {
+public class SqlRuParseSolution {
 
     public static void main(String[] args) throws Exception {
         for (int i = 1; i <= 5; i++) {
@@ -66,7 +66,3 @@ public class SqlRuParse {
         }
     }
 }
-//        Elements elements = doc.getElementsByClass("forumTable").get(0).getElementsByTag("tr");
-//        for (Element e : elements) {
-//            System.out.println(e.child(5).text());
-//        }
