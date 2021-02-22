@@ -34,4 +34,15 @@ public class Post {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Post{"
+                + "url='" + url + '\''
+                + ", title='" + title + '\''
+                + ", text='" + text + '\''
+                + ", date='" + date + '\''
+                + ", id=" + id
+                + '}';
+    }
 }

@@ -47,7 +47,8 @@ public class SqlRuParse {
 
     public static String dateConverter(String date) {
         String[] strings = date.split(", ");
-        LocalTime timeForJoin = LocalTime.parse(strings[1]);
+        String formattedTime = strings[1].replaceAll("[\\s\\[\\]\\|]", "");
+        LocalTime timeForJoin = LocalTime.parse(formattedTime);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd MMM yy, HH:mm");
         if (strings[0].contains("сегодня")) {
             return LocalDateTime.of(LocalDate.now(), timeForJoin).format(dtf);
@@ -67,10 +68,14 @@ public class SqlRuParse {
     public static Post parseToPost(String url) throws IOException {
         Document document = Jsoup.connect(url).get();
         Elements msgBody = document.select(".msgBody");
-        String textElement = msgBody.get(1).text();
-        Elements msgFooter = document.select(".msgFooter");
-        String dateElement =  msgFooter.get(0).ownText().substring(0, 16);
-        return new Post(textElement, dateConverter(dateElement));
+        Elements msgFooter = document.select("td.msgFooter");
+        Elements msgTitle = document.select(".messageHeader");
+        return new Post(
+                url,
+                msgTitle.get(0).ownText(),
+                msgBody.get(1).text(),
+                dateConverter(msgFooter.get(0).ownText())
+        );
     }
 }
 
