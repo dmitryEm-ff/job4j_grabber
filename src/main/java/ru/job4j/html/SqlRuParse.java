@@ -15,6 +15,21 @@ import java.util.Map;
 
 public class SqlRuParse {
 
+    private static Map<String, Integer> months = new HashMap<>() {{
+        put("янв", 1);
+        put("фев", 2);
+        put("мар", 3);
+        put("апр", 4);
+        put("май", 5);
+        put("июн", 6);
+        put("июл", 7);
+        put("авг", 8);
+        put("сен", 9);
+        put("окт", 10);
+        put("ноя", 11);
+        put("дек", 12);
+    }};
+
     public static void main(String[] args) throws Exception {
         for (int i = 1; i <= 5; i++) {
             Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
@@ -33,20 +48,6 @@ public class SqlRuParse {
     public static String dateConverter(String date) {
         String[] strings = date.split(", ");
         LocalTime timeForJoin = LocalTime.parse(strings[1]);
-        Map<String, Integer> months = new HashMap<>() {{
-            put("янв", 1);
-            put("фев", 2);
-            put("мар", 3);
-            put("апр", 4);
-            put("май", 5);
-            put("июн", 6);
-            put("июл", 7);
-            put("авг", 8);
-            put("сен", 9);
-            put("окт", 10);
-            put("ноя", 11);
-            put("дек", 12);
-        }};
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd MMM yy, HH:mm");
         if (strings[0].contains("сегодня")) {
             return LocalDateTime.of(LocalDate.now(), timeForJoin).format(dtf);
