@@ -4,6 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.job4j.grabber.Parse;
+import ru.job4j.grabber.Post;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -11,9 +13,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SqlRuParse {
+public class SqlRuParse implements Parse {
 
     private static Map<String, Integer> months = new HashMap<>() {{
         put("янв", 1);
@@ -76,6 +79,16 @@ public class SqlRuParse {
                 msgBody.get(1).text(),
                 dateConverter(msgFooter.get(0).ownText())
         );
+    }
+
+    @Override
+    public List<Post> list(String link) {
+        return null;
+    }
+
+    @Override
+    public Post detail(String link) {
+        return null;
     }
 }
 
