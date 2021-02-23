@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,19 +34,32 @@ public class SqlRuParse implements Parse {
         put("дек", 12);
     }};
 
-    public static void main(String[] args) throws Exception {
+    @Override
+    public List<Post> list(String link) throws IOException {
+        List<Post> rsl = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
-            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
+            Document doc = Jsoup.connect(link.endsWith("/") ? link + i : link + "/" + i).get();
             Elements row = doc.select(".postslisttopic");
             for (Element td : row) {
                 Element href = td.child(0);
-                System.out.println(href.attr("href"));
-                System.out.println(href.text());
-                Element date = td.parent().child(5);
-                System.out.println(dateConverter(date.text()));
-                System.out.println(date.text() + System.lineSeparator());
+                rsl.add(detail(href.attr("href")));
             }
         }
+        return rsl;
+    }
+
+    @Override
+    public Post detail(String link) throws IOException {
+        Document document = Jsoup.connect(link).get();
+        Elements msgBody = document.select(".msgBody");
+        Elements msgFooter = document.select("td.msgFooter");
+        Elements msgTitle = document.select(".messageHeader");
+        return new Post(
+                link,
+                msgTitle.get(0).ownText(),
+                msgBody.get(1).text(),
+                dateConverter(msgFooter.get(0).ownText())
+        );
     }
 
     public static String dateConverter(String date) {
@@ -68,6 +82,21 @@ public class SqlRuParse implements Parse {
         }
     }
 
+    public static void main(String[] args) throws Exception {
+        for (int i = 1; i <= 5; i++) {
+            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
+            Elements row = doc.select(".postslisttopic");
+            for (Element td : row) {
+                Element href = td.child(0);
+                System.out.println(href.attr("href"));
+                System.out.println(href.text());
+                Element date = td.parent().child(5);
+                System.out.println(dateConverter(date.text()));
+                System.out.println(date.text() + System.lineSeparator());
+            }
+        }
+    }
+
     public static Post parseToPost(String url) throws IOException {
         Document document = Jsoup.connect(url).get();
         Elements msgBody = document.select(".msgBody");
@@ -79,16 +108,6 @@ public class SqlRuParse implements Parse {
                 msgBody.get(1).text(),
                 dateConverter(msgFooter.get(0).ownText())
         );
-    }
-
-    @Override
-    public List<Post> list(String link) {
-        return null;
-    }
-
-    @Override
-    public Post detail(String link) {
-        return null;
     }
 }
 
