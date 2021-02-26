@@ -1,8 +1,8 @@
 package ru.job4j.grabber;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -32,11 +32,6 @@ public class PsqlStore implements Store, AutoCloseable {
             ps.setString(3, post.getUrl());
             ps.setString(4, post.getDate());
             ps.executeUpdate();
-            ResultSet resultSet = ps.getGeneratedKeys();
-            if (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                post.setId(id);
-            }
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -44,12 +39,43 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public List<Post> getAll() {
-        return null;
+        List<Post> posts = new ArrayList<>();
+        try (PreparedStatement ps = cnn.prepareStatement("select * from post")) {
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                Post post = new Post(
+                        resultSet.getString("link"),
+                        resultSet.getString("name"),
+                        resultSet.getString("text"),
+                        resultSet.getString("created")
+                        );
+                post.setId(resultSet.getInt("id"));
+                posts.add(post);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        return posts;
     }
 
     @Override
     public Post findById(String id) {
-        return null;
+        Post post = new Post();
+        try (PreparedStatement ps = cnn.prepareStatement("select * from post where id = ?")) {
+            ps.setInt(1, Integer.parseInt(id));
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                post.setUrl(resultSet.getString("link"));
+                post.setTitle(resultSet.getString("name"));
+                post.setText(resultSet.getString("text"));
+                post.setDate(resultSet.getString("created"));
+                post.setId(Integer.parseInt(id));
+                return post;
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        throw new IllegalStateException("Could not find by this id");
     }
 
     @Override
