@@ -56,7 +56,13 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             /* TODO impl logic */
-
+            try {
+                for (Post post : parse.list("https://www.sql.ru/forum/job-offers")) {
+                    store.save(post);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
